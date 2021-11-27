@@ -3,9 +3,13 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+//운영환경 설정
+const dotenv = require('dotenv');
+dotenv.config()
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
+var indexRouter = require('./routes/user/index');
+var usersRouter = require('./routes/user');
 
 var app = express();
 
