@@ -1,0 +1,140 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema dsu2021
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema dsu2021
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `dsu2021` DEFAULT CHARACTER SET utf8 ;
+USE `dsu2021` ;
+
+-- -----------------------------------------------------
+-- Table `dsu2021`.`t_user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dsu2021`.`t_user` (
+  `user_id` CHAR(36) NOT NULL,
+  `user_nm` VARCHAR(255) NOT NULL,
+  `user_desc` VARCHAR(255) NOT NULL,
+  `user_login_id` VARCHAR(255) NOT NULL,
+  `user_login_pw` VARCHAR(255) NOT NULL,
+  `created_at` INT NULL,
+  `modified_at` INT NULL,
+  PRIMARY KEY (`user_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dsu2021`.`t_board`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dsu2021`.`t_board` (
+  `board_id` CHAR(36) NOT NULL,
+  `user_id` CHAR(36) NOT NULL,
+  `board_title` VARCHAR(255) NOT NULL,
+  `board_content` TEXT NOT NULL,
+  `board_thumbnail` VARCHAR(255) NULL,
+  `created_at` INT NULL,
+  `modified_at` INT NULL,
+  PRIMARY KEY (`board_id`),
+  INDEX `fk_t_board_t_user_idx` (`user_id` ASC),
+  CONSTRAINT `fk_t_board_t_user`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dsu2021`.`t_user` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dsu2021`.`t_reply`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dsu2021`.`t_reply` (
+  `reply_id` CHAR(36) NOT NULL,
+  `user_id` CHAR(36) NOT NULL,
+  `board_id` CHAR(36) NOT NULL,
+  `reply_content` TEXT NOT NULL,
+  `created_at` INT NULL,
+  `modified_at` INT NULL,
+  PRIMARY KEY (`reply_id`),
+  INDEX `fk_t_reply_t_user1_idx` (`user_id` ASC),
+  INDEX `fk_t_reply_t_board1_idx` (`board_id` ASC),
+  CONSTRAINT `fk_t_reply_t_user1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dsu2021`.`t_user` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_t_reply_t_board1`
+    FOREIGN KEY (`board_id`)
+    REFERENCES `dsu2021`.`t_board` (`board_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dsu2021`.`t_tag`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dsu2021`.`t_tag` (
+  `tag_id` CHAR(36) NOT NULL,
+  `tag_nm` VARCHAR(255) NOT NULL,
+  `tag_desc` VARCHAR(255) NOT NULL,
+  `created_at` INT NULL,
+  `modified_at` INT NULL,
+  PRIMARY KEY (`tag_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dsu2021`.`t_recommend`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dsu2021`.`t_recommend` (
+  `user_id` CHAR(36) NOT NULL,
+  `board_id` CHAR(36) NOT NULL,
+  `created_at` INT NULL,
+  `modified_at` INT NULL,
+  INDEX `fk_t_recommend_t_user1_idx` (`user_id` ASC),
+  INDEX `fk_t_recommend_t_board1_idx` (`board_id` ASC),
+  PRIMARY KEY (`user_id`, `board_id`),
+  CONSTRAINT `fk_t_recommend_t_user1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dsu2021`.`t_user` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_t_recommend_t_board1`
+    FOREIGN KEY (`board_id`)
+    REFERENCES `dsu2021`.`t_board` (`board_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+— ——————————————————————————
+—————————————————————————— Table `dsu2021`.`t_board_tag`
+—————————————————————————— ——————————————————————————
+CREATE TABLE IF NOT EXISTS `dsu2021`.`t_board_tag` (
+  `board_id` CHAR(36) NOT NULL,
+  `tag_id` CHAR(36) NOT NULL,
+  PRIMARY KEY (`board_id`, `tag_id`),
+  INDEX `fk_t_board_has_t_tag_t_tag1_idx` (`tag_id` ASC),
+  INDEX `fk_t_board_has_t_tag_t_board1_idx` (`board_id` ASC),
+  CONSTRAINT `fk_t_board_has_t_tag_t_board1`
+    FOREIGN KEY (`board_id`)
+    REFERENCES `dsu2021`.`t_board` (`board_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_t_board_has_t_tag_t_tag1`
+    FOREIGN KEY (`tag_id`)
+    REFERENCES `dsu2021`.`t_tag` (`tag_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
