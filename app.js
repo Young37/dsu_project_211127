@@ -10,8 +10,9 @@ const dotenv = require('dotenv');
 dotenv.config()
 
 
-var indexRouter = require('./routes/user/index');
-var usersRouter = require('./routes/user');
+var indexRouter = require('./routes/user/index'); //파일로
+var usersRouter = require('./routes/user'); //디렉토리로
+var testRouter = require('./routes/users'); //파일로
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/test',testRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -12,8 +12,9 @@ router.post('/', async(req, res) => {
     }
 });
 /* GET home page. */
-router.get('/', async(req, res) => {
+router.get('/pp', async(req, res) => {
     try{
+        console.log('lol');
         const result = await UserService.getUserList();
         res.status(200).json({status: 200, data: result, message:'Success'});
     }catch(error){
